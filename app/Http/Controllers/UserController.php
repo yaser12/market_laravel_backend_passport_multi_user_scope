@@ -117,7 +117,14 @@ if($stack_product->number_in_cart<$stack_product->number_in_stock)
      }
      public  function  detet_stack_product_from_cart(Request  $request,$cart_id)
      {
-         $carts=   Cart::where('id',$cart_id)-> where("user_id",$request->user()->id)->delete();
+         $cart=   Cart::where('id',$cart_id)-> where("user_id",$request->user()->id)->first();
+
+         $stack_product=StockProduct::where("id",'=',$cart->stock_product_id)->first();
+
+         $stack_product->number_in_cart=$stack_product->number_in_cart-1;
+
+         $stack_product->save();
+         $cart->delete();
          return $this->get_cart_details($request);
      }
 
